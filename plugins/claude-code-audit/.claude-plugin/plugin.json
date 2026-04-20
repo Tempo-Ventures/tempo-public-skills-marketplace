@@ -1,0 +1,15 @@
+{
+  "name": "claude-code-audit",
+  "description": "Bezpecnostni audit konfigurace Claude Code - kontrola opravneni, MCP serveru, hooku a best practices",
+  "version": "1.0.0",
+  "skills": [
+    {
+      "name": "claude-code-audit",
+      "path": "skills/claude-code-audit/SKILL.md",
+      "description": "Audit konfigurace Claude Code s nalezy a doporucenimi"
+    }
+  ],
+  "references": [
+    "references/README.md"
+  ]
+}
