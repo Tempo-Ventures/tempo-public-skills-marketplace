@@ -7,6 +7,7 @@ Veřejný Claude Code plugin marketplace od **Tempo Ventures**. Obsahuje open so
 | Plugin | Popis |
 |--------|-------|
 | **claude-code-audit** | Bezpečnostní audit konfigurace Claude Code - kontrola oprávnění, MCP serverů, hooků a best practices |
+| **cisteni-dat** | Postupy a principy pro čištění dat - evidence, kontrola, deduplikace, standardizace, validace. Volba nástroje podle objemu a cílového systému |
 
 ## Instalace
 

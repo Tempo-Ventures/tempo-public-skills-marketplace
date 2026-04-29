@@ -11,6 +11,11 @@
       "name": "claude-code-audit",
       "source": "./plugins/claude-code-audit",
       "description": "Bezpečnostní audit konfigurace Claude Code - kontrola oprávnění, MCP serverů, hooků a best practices"
+    },
+    {
+      "name": "cisteni-dat",
+      "source": "./plugins/cisteni-dat",
+      "description": "Postupy a principy pro čištění dat - evidence, kontrola, deduplikace, standardizace, validace. Volba nástroje podle objemu a cílového systému."
     }
   ]
 }
