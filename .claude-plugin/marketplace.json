@@ -16,6 +16,11 @@
       "name": "cisteni-dat",
       "source": "./plugins/cisteni-dat",
       "description": "Postupy a principy pro čištění dat - evidence, kontrola, deduplikace, standardizace, validace. Volba nástroje podle objemu a cílového systému."
+    },
+    {
+      "name": "asana-mcp-setup",
+      "source": "./plugins/asana-mcp-setup",
+      "description": "Nastavení a obnova Asana MCP V2 serveru v Claude Code přes pre-registrovaný OAuth app. Diagnostika typických chyb (ofid_, redirect_uri mismatch, needs authentication)."
     }
   ]
 }
