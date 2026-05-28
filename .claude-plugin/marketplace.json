@@ -1,11 +1,11 @@
 {
   "name": "tempo-public-skills",
   "description": "Veřejné Claude Code skills a pluginy od Tempo Ventures - open source nástroje pro širokou komunitu",
-  "version": "1.0.0",
   "owner": {
     "name": "Tempo Ventures",
     "email": "honza@workflow.ooo"
   },
+  "version": "2.1.0",
   "plugins": [
     {
       "name": "claude-code-audit",
