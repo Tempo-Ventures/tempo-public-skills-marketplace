@@ -2,11 +2,8 @@
   "name": "cisteni-dat",
   "description": "Postupy a principy pro čištění dat - evidence, kontrola, deduplikace, standardizace, validace. Volba nástroje podle objemu a cílového systému.",
   "version": "1.0.0",
-  "skills": [
-    {
-      "name": "cisteni-dat",
-      "path": "skills/cisteni-dat/SKILL.md",
-      "description": "Logika a postupy čištění dat - od evidence souborů přes kontrolu po typické čistící operace"
-    }
-  ]
+  "author": {
+    "name": "Honza Pav",
+    "email": "honza@workflow.ooo"
+  }
 }

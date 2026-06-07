@@ -2,11 +2,8 @@
   "name": "asana-mcp-setup",
   "description": "Nastavení Asana MCP serveru pro Claude Code (V2 OAuth s pre-registrovanou aplikací). Diagnostika a obnova autentikace, když se přestane fungovat.",
   "version": "1.0.0",
-  "skills": [
-    {
-      "name": "asana-mcp-setup",
-      "path": "skills/asana-mcp-setup/SKILL.md",
-      "description": "Kompletní postup nastavení a obnovy Asana MCP V2 v Claude Code přes pre-registrovaný OAuth app"
-    }
-  ]
+  "author": {
+    "name": "Honza Pav",
+    "email": "honza@workflow.ooo"
+  }
 }
