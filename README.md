@@ -36,4 +36,4 @@ Issues a pull requests vítány. Dodržuj českou diakritiku, žádné emoji v k
 
 ## License
 
-MIT (viz LICENSE v jednotlivých pluginech, pokud relevantní).
+Celý repozitář je open source pod licencí [MIT](LICENSE).
