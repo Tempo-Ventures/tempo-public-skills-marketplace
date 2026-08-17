@@ -20,7 +20,9 @@ Audit identifikuje rizika a nabídne konkrétní doporučení.
 | **Globální** | `~/.claude/settings.json` | Ne | Osobní pravidla pro všechny projekty |
 | **Projektový sdílený** | `<repo>/.claude/settings.json` | Ano (git) | Týmová pravidla |
 | **Projektový lokální** | `<repo>/.claude/settings.local.json` | Ne (gitignored) | Osobní přepisy pro projekt |
-| **Managed** | Systémová úroveň | IT vynucené | Enterprise politiky |
+| **Managed** | macOS: `/Library/Application Support/ClaudeCode/managed-settings.json` | IT vynucené | Enterprise politiky |
+
+Mimo settings soubory drží Claude Code stav v `~/.claude.json` — tam žijí user-level MCP servery (klíč `mcpServers`) a seznam projektů s jejich per-projekt konfigurací (klíč `projects`). Projektové sdílené MCP servery jsou v `<repo>/.mcp.json`.
 
 ### Pravidla oprávnění
 
@@ -44,7 +46,7 @@ Vyhodnocení: **deny > ask > allow**. Deny pravidla mají vždy přednost.
     ],
     "deny": [
       "Bash(git push --force *)",
-      "mcp__claude_ai_Gmail__gmail_create_draft"
+      "mcp__gmail__send_message"
     ]
   }
 }
@@ -69,11 +71,16 @@ Vyhodnocení: **deny > ask > allow**. Deny pravidla mají vždy přednost.
 
 Skill přistupuje výhradně k těmto souborům:
 
+- `~/.claude.json` (jen struktura — hodnoty env/headers se nikdy necitují do reportu)
 - `~/.claude/settings.json` a `~/.claude/settings.local.json`
 - `~/.claude/CLAUDE.md`
+- výpisy adresářů `~/.claude/skills/`, `~/.claude/commands/`, `~/.claude/agents/`
+- managed settings (pokud existují)
+- `<repo>/.mcp.json`
 - `<repo>/.claude/settings.json` a `<repo>/.claude/settings.local.json`
 - `<repo>/.claude/CLAUDE.md` a `<repo>/CLAUDE.md`
+- výpisy `<repo>/.claude/skills|commands|agents`
 
-Skill **nečte** historii konverzací, session transkripty, paměti ani jiná citlivá data.
+Skill **nečte** historii konverzací, session transkripty, paměti ani jiná citlivá data. Hodnoty secrets (API klíče, tokeny, env, headers) se v reportu **nikdy neobjeví** — report uvádí jen typ nálezu a soubor.
 
 Skill funguje ve výchozím ask režimu — uživatel schvaluje čtení každého souboru.

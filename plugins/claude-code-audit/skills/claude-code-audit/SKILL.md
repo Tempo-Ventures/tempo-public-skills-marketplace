@@ -14,7 +14,9 @@ Tento skill je ČISTĚ READ-ONLY. Nesmí:
 - Logovat nebo ukládat výsledky
 - Přistupovat k session transkriptům, historii nebo pamětem
 
-Jediné povolené akce: Read, Glob, Bash(ls), Bash(find).
+Jediné povolené akce: Read, Glob, Grep, Bash(ls), Bash(find).
+
+Hodnoty secrets (API klíče, tokeny, env proměnné, headers) NIKDY necituj do reportu — ani zčásti. Report konstatuje jen nález a lokaci ("soubor X obsahuje hodnotu odpovídající patternu GitHub PAT"), nikdy hodnotu samotnou.
 </HARD-GATE>
 
 ## Postup auditu
@@ -23,18 +25,22 @@ Jediné povolené akce: Read, Glob, Bash(ls), Bash(find).
 
 Přečti globální konfiguraci:
 
-1. `~/.claude/settings.json`
-2. `~/.claude/settings.local.json`
-3. `~/.claude/CLAUDE.md`
+1. `~/.claude.json` — hlavní config: klíč `mcpServers` (user-level MCP servery) a klíč `projects` (per-projekt MCP, `disabledMcpServers` a nastavení). Pozor: soubor mívá tisíce řádků, z většiny telemetrie — nečti ho celý, najdi Grepem řádky klíčů `"mcpServers"` a `"projects"` a čti jen tyto bloky přes Read s offsetem.
+2. `~/.claude/settings.json` — permissions, hooky, `enabledPlugins`, `extraKnownMarketplaces`
+3. `~/.claude/settings.local.json` (pokud existuje)
+4. `~/.claude/CLAUDE.md`
+5. Vypiš obsah `~/.claude/skills/`, `~/.claude/commands/`, `~/.claude/agents/` (názvy; u skills tě zajímají jen spustitelné soubory — skripty `.sh`/`.py`/`.js`/`.ts`, binárky. Doprovodné `.md` reference nevypisuj, nejsou nález.)
+6. Managed settings, pokud existují (macOS: `/Library/Application Support/ClaudeCode/managed-settings.json`, Linux: `/etc/claude-code/managed-settings.json`)
 
 Najdi všechny projekty:
 
-4. Vypiš adresáře v `~/.claude/projects/`
-5. Pro každý projekt odvoď cestu k repu z názvu adresáře (např. `-Users-<username>-Dev-projekt` -> `/Users/<username>/Dev/projekt`)
-6. Přečti v každém repu:
+7. Zdrojem seznamu projektů je klíč `projects` v `~/.claude.json` — každý klíč je absolutní cesta k projektu. (Neodvozuj cesty z názvů adresářů v `~/.claude/projects/` — mangling pomlček je nespolehlivý.) Pokud je mezi projekty domácí adresář (`~`), přeskoč ho — jeho `.claude/` je globální konfigurace z kroků 1–6 a reportoval bys ji dvakrát.
+8. Přečti v každém projektu:
+   - `.mcp.json` (sdílené MCP servery)
    - `.claude/settings.json` (sdílený)
    - `.claude/settings.local.json` (lokální)
    - `.claude/CLAUDE.md` a `CLAUDE.md`
+   - obsah `.claude/skills/`, `.claude/commands/`, `.claude/agents/` (pokud existují)
 
 Pokud soubor neexistuje, pokračuj dál — to není nález.
 
@@ -56,35 +62,50 @@ Kontroluj v settings.json na všech úrovních:
 
 | Nález | Podmínka | Doporučení |
 |-------|----------|------------|
-| `bypassPermissions` je zapnutý | `"defaultMode": "bypassPermissions"` nebo ekvivalent | Okamžitě vypnout. Tento režim obchází všechna oprávnění. Používat pouze v izolovaném prostředí (kontejner, VM). |
-| `skipDangerousModePermissionPrompt` | `"skipDangerousModePermissionPrompt": true` | Vypnout. Toto nastavení přeskakuje varování při přepnutí do nebezpečného režimu. |
+| `bypassPermissions` je zapnutý | `"defaultMode": "bypassPermissions"` v `permissions` | Okamžitě vypnout. Tento režim obchází všechna oprávnění. Používat pouze v izolovaném prostředí (kontejner, VM). |
+| Bypass režim není zakázán | Chybí `"disableBypassPermissionsMode": "disable"` | Info pro sdílené/firemní stroje: tímto klíčem (v managed nebo globálním settings) lze bypass režim úplně zakázat. |
 
 ### 2. Secrets v plaintextu (severity: KRITICKÉ)
 
-Prohledej všechny CLAUDE.md a settings soubory na:
+Prohledej všechny CLAUDE.md, settings soubory, `~/.claude.json` a `.mcp.json` (zejména pole `env`, `headers`, `args` u MCP serverů) na hodnoty odpovídající patternům živých klíčů:
 
-- API klíče (patterny: `sk-`, `api_key`, `apikey`, `token`, `secret`, `password`, `Bearer `)
-- Přihlašovací údaje (URL s `user:password@`)
-- Base64 kódované řetězce, které vypadají jako tokeny
+| Pattern | Typ |
+|---------|-----|
+| `sk-[A-Za-z0-9_-]{16,}` | OpenAI / Anthropic API klíč |
+| `ghp_`, `gho_`, `github_pat_` + alfanumerický zbytek | GitHub PAT |
+| `AKIA[0-9A-Z]{16}` | AWS access key |
+| `xox[baprs]-...` | Slack token |
+| `Bearer ` + dlouhý token v headers | Bearer token |
+| URL s `user:password@` | Přihlašovací údaje v URL |
+| Obecně: `api_key`, `apikey`, `token`, `secret`, `password` s dlouhou hodnotou | Generický secret |
 
-**Doporučení:** Použít environment proměnné, 1Password CLI (`op run` nebo `op read`), nebo `.env` soubor (který není v gitu).
+Do reportu uveď jen typ patternu a soubor, nikdy hodnotu (viz HARD-GATE).
+
+Patterny ber jako ukotvené na začátku tokenu — hodnota, kde je pattern jen podřetězcem (např. klíč začínající `ctx7sk-`), není klíč daného poskytovatele; reportuj ji jako generický secret, ne pod cizím typem.
+
+Každý inline secret matchující pattern reportuj právě jednou, pod tímto pravidlem jako KRITICKÉ — i když je nalezen v configu MCP serveru (pravidlo 3 pak pokrývá jen inline hodnoty, které patternu neodpovídají).
+
+**Doporučení:** Secrets držet mimo config — použít environment proměnné, OS keychain (macOS: `security find-generic-password -s <service> -w`), Bitwarden CLI (`bw get password <item>`), 1Password CLI (`op run` / `op read`), nebo `.env` soubor mimo git.
 
 ### 3. MCP servery (severity: VYSOKÉ)
 
-Identifikuj připojené MCP servery z `settings.json` nebo `.mcp.json`. Pro každý server ověř, zda existují deny pravidla pro destruktivní akce.
+MCP servery jsou definované na více úrovních — zkontroluj všechny:
 
-**Vysoce rizikové MCP nástroje** (změny viditelné externím systémům):
+- user-level: `~/.claude.json` → `mcpServers`
+- per-projekt (lokální): `~/.claude.json` → `projects.<cesta>.mcpServers`
+- projektové sdílené: `<repo>/.mcp.json`
 
-| Server | Destruktivní nástroje | Doporučené deny |
-|--------|----------------------|-----------------|
-| Gmail | `gmail_create_draft`, `gmail_send_message` | `mcp__claude_ai_Gmail__gmail_create_draft` |
-| Proton Mail | `save_draft`, `move_emails` | `mcp__proton-bridge__save_draft` |
-| Asana | `asana_create_task`, `asana_delete_task`, `asana_create_task_story`, `asana_update_task` | `mcp__claude_ai_Asana__asana_delete_task` |
-| Google Calendar | `gcal_create_event`, `gcal_delete_event`, `gcal_respond_to_event` | `mcp__claude_ai_Google_Calendar__gcal_delete_event` |
-| Browser automation | Všechny akce (klik, vyplnění formuláře) | Podle kontextu |
+Pro každý server aplikuj tyto kontroly:
 
-**Nález:** MCP server připojen, ale žádné deny pravidlo pro jeho destruktivní nástroje.
-**Doporučení:** Přidat explicitní deny pravidla pro akce, které nemají být automaticky povoleny. Alternativně použít ask režim (výchozí) a nepovolovat celé servery.
+| Nález | Podmínka | Severity | Doporučení |
+|-------|----------|----------|------------|
+| Secret inline v configu | Server má hodnoty v `env` nebo `headers` (a nejde o referenci na secret manager ani env indirekci) | STŘEDNÍ (pokud hodnota odpovídá patternu z pravidla 2, reportuje se tam jako KRITICKÉ — ne tady) | Nahradit referencí na secret manager nebo env indirekcí (`${VAR}`). |
+| Remote MCP přes plaintext HTTP | `url` začíná `http://` a nejde o loopback (`localhost`, `127.0.0.1`) — lokální servery neflaguj | VYSOKÉ | Přepnout endpoint na https. |
+| Remote-exec launcher | stdio server spouštěný přes `uvx`, `bunx`, nebo `curl \| sh` — kód se stahuje při každém startu (`npx` je standardní MCP launcher, ten neflaguj) | NÍZKÉ | Ověřit důvěryhodnost zdroje, pokud možno pinnout verzi. |
+| Vypnutý server stále v configu | Server uvedený v `disabledMcpServers`, ale definice zůstává | INFO | Odstranit z configu, pokud už není potřeba. |
+| Chybí deny pro destruktivní nástroje | Server umí akce viditelné externím systémům (odeslat e-mail/zprávu, vytvořit/smazat task, event, záznam; browser automation), ale žádné deny/ask pravidlo pro ně neexistuje | VYSOKÉ | Přidat deny pravidla ve formátu `mcp__<server>__<nástroj>`. |
+
+**Pozor u deny pravidel na názvy nástrojů:** přesný název je `mcp__<název_serveru>__<název_nástroje>` a musí odpovídat skutečnému názvu nástroje. Z configu inventář nástrojů serveru nezjistíš — navržené deny názvy proto v reportu explicitně označ jako hypotézu, kterou si uživatel ověří přes `/mcp` nebo dokumentaci serveru. Deny s neexistujícím názvem nic nechrání. Destruktivní nástroje poznáš podle sloves: `send`, `create`, `delete`, `update`, `move`, `trash`, `respond`. Zároveň zkontroluj existující allow/ask/deny pravidla proti definovaným serverům — pravidlo odkazující na server, který nikde definovaný není, je zastaralé (INFO).
 
 ### 4. Šířka oprávnění (severity: STŘEDNÍ)
 
@@ -111,15 +132,17 @@ Kontroluj allow pravidla na všech úrovních:
 | Duplicitní pravidla | Stejné pravidlo na více úrovních | Ponechat jen na správné úrovni |
 | Prázdné deny/ask pole | `"deny": [], "ask": []` | Není chyba, ale zbytečný šum — lze odstranit |
 
-### 6. Hooky (severity: STŘEDNÍ)
+### 6. Hooky (severity: dle kontextu)
 
-Kontroluj hooky v settings.json na všech úrovních:
+Kontroluj hooky v settings.json na všech úrovních. Command hooky spouštějí libovolný shell příkaz automaticky — severity odvíjej od eventu a matcheru:
 
-| Nález | Podmínka | Doporučení |
-|-------|----------|------------|
-| Žádné PreToolUse hooky | Chybí hooky pro kontrolu destruktivních akcí | Zvážit přidání hooku pro logování nebo blokování nebezpečných příkazů |
-| Hook ve sdíleném settings | Hook definovaný v `<repo>/.claude/settings.json` | Ověřit, že hook nepochází od nedůvěryhodného spolupracovníka — hooky mohou spouštět libovolné příkazy |
-| Hook spouští síťový požadavek | Hook obsahuje `curl`, `wget`, `fetch` | Ověřit, kam data odchází |
+| Nález | Podmínka | Severity | Doporučení |
+|-------|----------|----------|------------|
+| Command hook na citlivém eventu bez matcheru | Hook na `PreToolUse` nebo `UserPromptSubmit` s prázdným/chybějícím matcherem — spouští se při každé akci | VYSOKÉ | Zúžit matcher na konkrétní nástroje, ověřit důvěryhodnost příkazu. |
+| Command hook s matcherem nebo na jiném eventu | Ostatní command hooky (`PostToolUse`, `Stop`, `Notification`…) | STŘEDNÍ | Ověřit, že příkaz je důvěryhodný. |
+| Hook ve sdíleném settings | Hook definovaný v `<repo>/.claude/settings.json` | STŘEDNÍ | Ověřit původ — sdílený hook z gitu může pocházet od kohokoliv a spouští libovolné příkazy. |
+| Hook spouští síťový požadavek | Hook obsahuje `curl`, `wget`, `fetch` | STŘEDNÍ | Ověřit, kam data odchází. |
+| Žádné PreToolUse hooky | Chybí hooky pro kontrolu destruktivních akcí | INFO | Zvážit přidání hooku pro logování nebo blokování nebezpečných příkazů. |
 
 ### 7. CLAUDE.md injection (severity: STŘEDNÍ)
 
@@ -132,7 +155,17 @@ Kontroluj sdílené CLAUDE.md soubory (`<repo>/.claude/CLAUDE.md` a `<repo>/CLAU
 | Instrukční override | Text obsahující "ignore previous", "system prompt", "you are now" | Odstranit — pravděpodobně prompt injection |
 | Citlivé informace | E-maily, URL intranetu, jména serverů | Přesunout do lokálních souborů |
 
-### 8. Pojmenování a konzistence (severity: INFORMAČNÍ)
+### 8. Skills, agents a pluginy (severity: dle kontextu)
+
+Skills, commands, agents i pluginy jsou instrukce a kód, které se injektují do session — třetí strana jimi může měnit chování Clauda:
+
+| Nález | Podmínka | Severity | Doporučení |
+|-------|----------|----------|------------|
+| Skill obsahuje spustitelné soubory | Adresář skillu obsahuje skripty (`.sh`, `.py`, `.js`, `.ts`) nebo binárky — doprovodné `.md` reference sem nepatří | INFO | Před důvěrou skillu zkontrolovat přibalené skripty. Souhrnně (jeden nález se seznamem), ne položka per skill. |
+| Skill/agent/command ve sdíleném repu | Definice v `<repo>/.claude/` z gitu | INFO | Ověřit původ — platí totéž co pro sdílené hooky. |
+| Marketplace mimo oficiální zdroje | `extraKnownMarketplaces` obsahuje marketplace, jehož původ uživatel nemusí znát | INFO | Vypiš je a nech posouzení na uživateli — pluginy můžou nést hooky a MCP servery, instalovat jen z důvěryhodných zdrojů. |
+
+### 9. Pojmenování a konzistence (severity: INFORMAČNÍ)
 
 | Nález | Podmínka | Doporučení |
 |-------|----------|------------|
@@ -140,7 +173,7 @@ Kontroluj sdílené CLAUDE.md soubory (`<repo>/.claude/CLAUDE.md` a `<repo>/CLAU
 | Těžko čitelná pravidla | Příliš dlouhá nebo složitá pravidla | Rozdělit na menší, pojmenované celky |
 | Zastaralé cesty | Cesty k neexistujícím adresářům nebo souborům | Odstranit |
 
-### 9. Konflikty mezi scopy (severity: INFORMAČNÍ)
+### 10. Konflikty mezi scopy (severity: INFORMAČNÍ)
 
 | Nález | Podmínka | Doporučení |
 |-------|----------|------------|
@@ -163,8 +196,10 @@ Pravidlo: pokud se oprávnění týká konkrétního projektu, patří do projek
 
 ### Secrets — jak správně
 
-- **Nikdy** neukládej API klíče, tokeny nebo hesla do CLAUDE.md, settings.json ani do kódu
-- Použij environment proměnné: `export API_KEY="..."`
+- **Nikdy** neukládej API klíče, tokeny nebo hesla do CLAUDE.md, settings.json, `~/.claude.json`, `.mcp.json` ani do kódu
+- Použij environment proměnné: `export API_KEY="..."` (a v configu referenci `${API_KEY}`)
+- Použij OS keychain — macOS: `security add-generic-password` / `security find-generic-password -s <service> -w`
+- Použij Bitwarden CLI: `bw get password <item>` (se session přes `bw unlock`)
 - Použij 1Password CLI: `op run -- claude` nebo `op read "op://vault/item/field"`
 - Použij `.env` soubor a přidej ho do `.gitignore`
 
@@ -177,9 +212,10 @@ Pravidlo: pokud se oprávnění týká konkrétního projektu, patří do projek
 
 ### MCP servery — obecně
 
-- Připojuj jen servery, které aktivně používáš
-- Pro každý server s destruktivními akcemi přidej explicitní deny pravidla
+- Připojuj jen servery, které aktivně používáš; vypnuté servery z configu smaž
+- Pro každý server s destruktivními akcemi přidej explicitní deny pravidla (ověřené názvy nástrojů)
 - Upřednostni povolování konkrétních nástrojů (`mcp__server__tool`) před celým serverem (`mcp__server`)
+- U stdio serverů pinnuj verze balíčků, vyhýbej se launcherům stahujícím kód za běhu
 
 ---
 
