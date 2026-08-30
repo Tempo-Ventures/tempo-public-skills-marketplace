@@ -257,3 +257,10 @@ Nálezy: N kritických, N vysokých, N středních, N informačních
 Řazení nálezů: kritické první, pak vysoké, střední, informační.
 
 Pokud audit neodhalil žádné nálezy, napiš to explicitně a přidej doporučení pro další zlepšení.
+
+## Když něco nefunguje
+
+Neobcházej to vlastním postupem a **needituj nic v `~/.claude/plugins/cache`** --
+při updatu pluginu se to přepíše. Diagnostiku a nahlášení řeší skill
+`podpora-nastroju` (plugin `podpora`): chyby i návrhy na změnu se zakládají jako
+úkol v Asaně, projekt [Digital Support](https://app.asana.com/1/14933110711900/project/1217984236915577).

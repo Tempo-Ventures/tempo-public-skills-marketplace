@@ -132,3 +132,10 @@ Pokud `/mcp` selhává a chceš to ověřit ručně, můžeš volat `mcp__asana_
 - [Bug #55067 — random port on re-auth](https://github.com/anthropics/claude-code/issues/55067)
 - [Bug #58091 — redirect_uri mismatch](https://github.com/anthropics/claude-code/issues/58091)
 - [V1 → V2 migration GitHub issue](https://github.com/anthropics/claude-plugins-official/issues/998)
+
+## Když něco nefunguje
+
+Neobcházej to vlastním postupem a **needituj nic v `~/.claude/plugins/cache`** --
+při updatu pluginu se to přepíše. Diagnostiku a nahlášení řeší skill
+`podpora-nastroju` (plugin `podpora`): chyby i návrhy na změnu se zakládají jako
+úkol v Asaně, projekt [Digital Support](https://app.asana.com/1/14933110711900/project/1217984236915577).

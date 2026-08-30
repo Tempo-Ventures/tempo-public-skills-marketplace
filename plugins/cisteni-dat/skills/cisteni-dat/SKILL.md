@@ -134,3 +134,10 @@ Po dokončení:
 - [ ] Anomálie prověřené (min/max, extrémy)
 - [ ] Duplicity vyřešené podle dohody
 - [ ] Výstup odpovídá formátu cílového systému
+
+## Když něco nefunguje
+
+Neobcházej to vlastním postupem a **needituj nic v `~/.claude/plugins/cache`** --
+při updatu pluginu se to přepíše. Diagnostiku a nahlášení řeší skill
+`podpora-nastroju` (plugin `podpora`): chyby i návrhy na změnu se zakládají jako
+úkol v Asaně, projekt [Digital Support](https://app.asana.com/1/14933110711900/project/1217984236915577).
