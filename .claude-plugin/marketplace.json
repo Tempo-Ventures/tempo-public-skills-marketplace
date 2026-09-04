@@ -5,7 +5,7 @@
     "name": "Tempo Ventures",
     "email": "honza@workflow.ooo"
   },
-  "version": "2.11.0",
+  "version": "2.12.0",
   "plugins": [
     {
       "name": "claude-code-audit",
