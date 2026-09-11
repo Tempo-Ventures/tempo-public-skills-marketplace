@@ -1,0 +1,12 @@
+{
+  "name": "markdown-to-gdoc",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "test:live": "GDOC_LIVE=1 node --test test/*.test.js"
+  },
+  "dependencies": {
+    "markdown-it": "^14.1.0"
+  }
+}

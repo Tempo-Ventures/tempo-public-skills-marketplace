@@ -1,0 +1,9 @@
+{
+  "name": "markdown-to-gdoc",
+  "description": "Google Docs z markdownu přes gws CLI — nový dokument, dokument ze šablony, přepis nebo doplnění tabu, diff dokumentu proti zdroji, správa tabů a komentářů",
+  "version": "1.0.0",
+  "author": {
+    "name": "Honza Pav",
+    "email": "honza@workflow.ooo"
+  }
+}

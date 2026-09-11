@@ -5,7 +5,7 @@
     "name": "Tempo Ventures",
     "email": "honza@workflow.ooo"
   },
-  "version": "2.13.0",
+  "version": "2.14.0",
   "plugins": [
     {
       "name": "claude-code-audit",
@@ -21,6 +21,11 @@
       "name": "asana-mcp-setup",
       "source": "./plugins/asana-mcp-setup",
       "description": "Nastavení a obnova Asana MCP V2 serveru v Claude Code přes pre-registrovaný OAuth app. Diagnostika typických chyb (ofid_, redirect_uri mismatch, needs authentication)."
+    },
+    {
+      "name": "markdown-to-gdoc",
+      "source": "./plugins/markdown-to-gdoc",
+      "description": "Google Docs z markdownu přes gws CLI — nový dokument, dokument ze šablony, přepis nebo doplnění tabu, diff dokumentu proti zdroji, správa tabů a komentářů"
     }
   ]
 }
