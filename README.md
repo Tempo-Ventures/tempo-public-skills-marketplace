@@ -8,6 +8,7 @@ Veřejný Claude Code plugin marketplace od **Tempo Ventures**. Obsahuje open so
 |--------|-------|
 | **claude-code-audit** | Bezpečnostní audit konfigurace Claude Code - kontrola oprávnění, MCP serverů, hooků a best practices |
 | **cisteni-dat** | Postupy a principy pro čištění dat - evidence, kontrola, deduplikace, standardizace, validace. Volba nástroje podle objemu a cílového systému |
+| **integralni-rozbor-dilematu** | Rozbor dilematu přes šest úrovní vývoje myšlení (červená, modrá, oranžová, zelená, žlutá, tyrkysová) — šest rychlých odpovědí, pak hlubší integrální analýza a návrh konkrétní odpovědi |
 | **markdown-to-gdoc** | Google Docs z markdownu přes gws CLI — nový dokument, dokument ze šablony, přepis nebo doplnění tabu, diff dokumentu proti zdroji, správa tabů a komentářů |
 
 ## Instalace
@@ -19,6 +20,7 @@ Veřejný Claude Code plugin marketplace od **Tempo Ventures**. Obsahuje open so
 # Nainstaluj plugin
 /plugin install claude-code-audit@tempo-public-skills
 /plugin install cisteni-dat@tempo-public-skills
+/plugin install integralni-rozbor-dilematu@tempo-public-skills
 /plugin install markdown-to-gdoc@tempo-public-skills
 ```
 
