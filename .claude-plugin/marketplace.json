@@ -5,7 +5,7 @@
     "name": "Tempo Ventures",
     "email": "honza@workflow.ooo"
   },
-  "version": "2.15.2",
+  "version": "2.16.0",
   "plugins": [
     {
       "name": "claude-code-audit",
@@ -16,6 +16,11 @@
       "name": "cisteni-dat",
       "source": "./plugins/cisteni-dat",
       "description": "Postupy a principy pro čištění dat - evidence, kontrola, deduplikace, standardizace, validace. Volba nástroje podle objemu a cílového systému."
+    },
+    {
+      "name": "integralni-rozbor-dilematu",
+      "source": "./plugins/integralni-rozbor-dilematu",
+      "description": "Rozbor dilematu přes šest úrovní vývoje myšlení (červená, modrá, oranžová, zelená, žlutá, tyrkysová) a navazující integrální analýza s návrhem konkrétní odpovědi"
     },
     {
       "name": "markdown-to-gdoc",
