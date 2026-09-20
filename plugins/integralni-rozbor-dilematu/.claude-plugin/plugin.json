@@ -1,11 +1,10 @@
 {
   "name": "integralni-rozbor-dilematu",
   "description": "Rozbor dilematu přes šest úrovní vývoje myšlení (červená, modrá, oranžová, zelená, žlutá, tyrkysová) a navazující integrální analýza s návrhem odpovědi",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": {
-    "name": "Honza Pav",
-    "email": "honza@workflow.ooo",
-    "url": "https://workflow.ooo"
+    "name": "Honza Jelínek",
+    "email": "honza@tempo.ooo"
   },
   "repository": "https://github.com/Tempo-Ventures/tempo-skills-marketplace"
 }
