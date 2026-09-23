@@ -6,6 +6,7 @@ Veřejný Claude Code plugin marketplace od **Tempo Ventures**. Obsahuje open so
 
 | Plugin | Popis |
 |--------|-------|
+| **asana** | Práce s Asanou – návrh struktury organizace (týmy, projekty, lidé, viditelnost), návrh nastavení projektu, procesu nebo agendy a zakládání úkolů podle druhu jednotky práce včetně hledání duplicit |
 | **claude-code-audit** | Bezpečnostní audit konfigurace Claude Code - kontrola oprávnění, MCP serverů, hooků a best practices |
 | **cisteni-dat** | Postupy a principy pro čištění dat - evidence, kontrola, deduplikace, standardizace, validace. Volba nástroje podle objemu a cílového systému |
 | **integralni-rozbor-dilematu** | Rozbor dilematu přes šest úrovní vývoje myšlení (červená, modrá, oranžová, zelená, žlutá, tyrkysová) — šest rychlých odpovědí, pak hlubší integrální analýza a návrh konkrétní odpovědi |
@@ -18,6 +19,7 @@ Veřejný Claude Code plugin marketplace od **Tempo Ventures**. Obsahuje open so
 /plugin marketplace add Tempo-Ventures/tempo-public-skills-marketplace
 
 # Nainstaluj plugin
+/plugin install asana@tempo-public-skills
 /plugin install claude-code-audit@tempo-public-skills
 /plugin install cisteni-dat@tempo-public-skills
 /plugin install integralni-rozbor-dilematu@tempo-public-skills
