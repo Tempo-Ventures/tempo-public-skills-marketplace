@@ -1,0 +1,9 @@
+{
+  "name": "asana",
+  "description": "Práce s Asanou: navrhne strukturu organizace (týmy, projekty, lidé, viditelnost), vyzpovídá člověka o projektu, procesu nebo agendě a navrhne jejich nastavení, zakládá úkoly podle druhu jednotky práce a hledá duplicitní úkoly. Projekty zakládá přes Asana connector, nebo připraví CSV.",
+  "version": "0.6.0",
+  "author": {
+    "name": "Honza Pav",
+    "email": "honza@workflow.ooo"
+  }
+}

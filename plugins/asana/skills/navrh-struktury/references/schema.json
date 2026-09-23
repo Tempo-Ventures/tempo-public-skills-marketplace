@@ -1,0 +1,577 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "client": {
+      "type": "object",
+      "properties": {
+        "slug": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "workspace": {
+          "default": {
+            "gid": null,
+            "name": null
+          },
+          "type": "object",
+          "properties": {
+            "gid": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "name": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "gid",
+            "name"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "slug",
+        "name",
+        "workspace"
+      ],
+      "additionalProperties": false
+    },
+    "x-rules": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "x-audit": {
+      "default": {
+        "disabledRules": [],
+        "thresholds": {}
+      },
+      "type": "object",
+      "properties": {
+        "disabledRules": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "thresholds": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "maxSecretTeams": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "statusUpdateMaxDays": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "inactiveMaxDays": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "maxCustomFields": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "disabledRules",
+        "thresholds"
+      ],
+      "additionalProperties": false
+    },
+    "users": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "gid": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "x-id": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "email": {
+            "default": null,
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "email",
+                "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "x-role": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "x-invite": {
+            "default": false,
+            "type": "boolean"
+          },
+          "x-lead": {
+            "default": false,
+            "type": "boolean"
+          },
+          "x-ambassador": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "gid",
+          "x-id",
+          "name",
+          "email",
+          "x-role",
+          "x-invite",
+          "x-lead",
+          "x-ambassador"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "custom_fields": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "gid": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "resource_subtype": {
+            "default": "text",
+            "type": "string",
+            "enum": [
+              "text",
+              "number",
+              "enum",
+              "multi_enum",
+              "date",
+              "people"
+            ]
+          },
+          "description": {
+            "default": "",
+            "type": "string"
+          },
+          "precision": {
+            "default": 0,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 6
+          },
+          "enum_options": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "gid": {
+                  "default": null,
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "color": {
+                  "default": "none",
+                  "type": "string",
+                  "enum": [
+                    "none",
+                    "red",
+                    "orange",
+                    "yellow-orange",
+                    "yellow",
+                    "yellow-green",
+                    "green",
+                    "blue-green",
+                    "aqua",
+                    "blue",
+                    "indigo",
+                    "purple",
+                    "magenta",
+                    "hot-pink",
+                    "pink",
+                    "cool-gray"
+                  ]
+                }
+              },
+              "required": [
+                "gid",
+                "name",
+                "color"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "gid",
+          "name",
+          "resource_subtype",
+          "description",
+          "precision",
+          "enum_options"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "teams": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "gid": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "html_description": {
+            "default": "",
+            "type": "string"
+          },
+          "visibility": {
+            "default": "public",
+            "type": "string",
+            "enum": [
+              "public",
+              "request_to_join",
+              "secret"
+            ]
+          },
+          "x-notes": {
+            "default": "",
+            "type": "string"
+          },
+          "memberships": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "user": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9-]+$"
+                }
+              },
+              "required": [
+                "user"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "gid",
+          "name",
+          "html_description",
+          "visibility",
+          "x-notes",
+          "memberships"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "projects": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "gid": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "team": {
+            "type": "string",
+            "minLength": 1
+          },
+          "privacy_setting": {
+            "default": "public_to_workspace",
+            "type": "string",
+            "enum": [
+              "public_to_workspace",
+              "private_to_team",
+              "private"
+            ]
+          },
+          "default_view": {
+            "default": "list",
+            "type": "string",
+            "enum": [
+              "list",
+              "board",
+              "calendar",
+              "timeline"
+            ]
+          },
+          "notes": {
+            "default": "",
+            "type": "string"
+          },
+          "owner": {
+            "default": null,
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z0-9-]+$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sections": {
+            "default": [
+              "Nezařazené"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "members": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]+$"
+            }
+          },
+          "x-members-from-team": {
+            "default": false,
+            "type": "boolean"
+          },
+          "x-type": {
+            "default": "agenda",
+            "type": "string",
+            "enum": [
+              "agenda",
+              "projekt",
+              "proces"
+            ]
+          },
+          "custom_field_settings": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "custom_field": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "is_important": {
+                  "default": false,
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "custom_field",
+                "is_important"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "tasks": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "gid": {
+                  "default": null,
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "x-id": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9-]+$"
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "html_notes": {
+                  "default": "",
+                  "type": "string"
+                },
+                "resource_subtype": {
+                  "default": "default_task",
+                  "type": "string",
+                  "enum": [
+                    "default_task",
+                    "milestone",
+                    "approval"
+                  ]
+                },
+                "section": {
+                  "default": null,
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "parent": {
+                  "default": null,
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[a-z0-9-]+$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "dependencies": {
+                  "default": [],
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9-]+$"
+                  }
+                },
+                "x-role": {
+                  "default": null,
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "x-due-offset": {
+                  "default": null,
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "gid",
+                "x-id",
+                "name",
+                "html_notes",
+                "resource_subtype",
+                "section",
+                "parent",
+                "dependencies",
+                "x-role",
+                "x-due-offset"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "gid",
+          "name",
+          "team",
+          "privacy_setting",
+          "default_view",
+          "notes",
+          "owner",
+          "sections",
+          "members",
+          "x-members-from-team",
+          "x-type",
+          "custom_field_settings",
+          "tasks"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "client",
+    "x-rules",
+    "x-audit",
+    "users",
+    "custom_fields",
+    "teams",
+    "projects"
+  ],
+  "additionalProperties": false
+}

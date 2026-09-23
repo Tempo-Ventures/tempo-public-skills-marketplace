@@ -5,8 +5,13 @@
     "name": "Tempo Ventures",
     "email": "honza@workflow.ooo"
   },
-  "version": "2.24.0",
+  "version": "2.25.0",
   "plugins": [
+    {
+      "name": "asana",
+      "source": "./plugins/asana",
+      "description": "Práce s Asanou: navrhne strukturu organizace (týmy, projekty, lidé, viditelnost), vyzpovídá člověka o projektu, procesu nebo agendě a navrhne jejich nastavení, zakládá úkoly podle druhu jednotky práce a hledá duplicitní úkoly. Projekty zakládá přes Asana connector, nebo připraví CSV."
+    },
     {
       "name": "claude-code-audit",
       "source": "./plugins/claude-code-audit",

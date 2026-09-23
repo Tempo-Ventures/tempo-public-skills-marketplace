@@ -1,0 +1,339 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Návrh projektu v Asaně",
+  "type": "object",
+  "required": [
+    "goal",
+    "done_when",
+    "plan",
+    "owner",
+    "work_type",
+    "unit_kind",
+    "unit",
+    "name",
+    "view",
+    "show_tasks",
+    "sort",
+    "sections",
+    "custom_fields",
+    "tasks",
+    "repeatability",
+    "intake",
+    "open_questions",
+    "rejections"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "goal": {
+      "type": "string"
+    },
+    "deliverable": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "benefit": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "done_when": {
+      "type": "string"
+    },
+    "boundaries": {
+      "type": "string"
+    },
+    "owner": {
+      "type": "string"
+    },
+    "work_type": {
+      "enum": [
+        "projekt",
+        "proces",
+        "agenda"
+      ]
+    },
+    "unit_kind": {
+      "enum": [
+        "krok",
+        "pruchod",
+        "zaznam",
+        "polozka"
+      ]
+    },
+    "unit": {
+      "type": "string"
+    },
+    "team": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "name": {
+      "type": "string"
+    },
+    "overview": {
+      "type": "string"
+    },
+    "view": {
+      "enum": [
+        "list",
+        "board",
+        "timeline",
+        "calendar"
+      ]
+    },
+    "show_tasks": {
+      "enum": [
+        "all",
+        "incomplete"
+      ]
+    },
+    "sort": {
+      "enum": [
+        "due_within_sections",
+        "due",
+        "any"
+      ]
+    },
+    "grouping": {
+      "enum": [
+        "sections",
+        "custom_field"
+      ],
+      "default": "sections"
+    },
+    "grouping_field": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "hide_assignee": {
+      "type": "boolean",
+      "default": false
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "custom_fields": {
+      "type": "array",
+      "maxItems": 7,
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "type"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "text",
+              "number",
+              "enum",
+              "multi_enum",
+              "people",
+              "date"
+            ]
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "hidden": {
+            "type": "boolean",
+            "default": false
+          },
+          "role": {
+            "enum": [
+              "status",
+              "owner",
+              "role",
+              "data"
+            ],
+            "default": "data"
+          }
+        }
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "section"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "section": {
+            "type": "string"
+          },
+          "assignee_role": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "due": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "mode": {
+                "enum": [
+                  "fixed",
+                  "offset"
+                ]
+              },
+              "date": {
+                "type": "string"
+              },
+              "offset_days": {
+                "type": "integer"
+              },
+              "from": {
+                "type": "string"
+              }
+            }
+          },
+          "notes": {
+            "type": "string"
+          },
+          "is_milestone": {
+            "type": "boolean",
+            "default": false
+          },
+          "subtasks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10
+          }
+        }
+      }
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "completed_to_done",
+          "day_before_due_to_running"
+        ]
+      }
+    },
+    "repeatability": {
+      "type": "object",
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "project_template",
+            "task_template",
+            "none"
+          ]
+        },
+        "task_template": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "name_pattern": {
+              "type": "string"
+            },
+            "subtasks": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "intake": {
+      "enum": [
+        "none",
+        "form",
+        "section"
+      ]
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "rejections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "what",
+          "why"
+        ],
+        "properties": {
+          "what": {
+            "type": "string"
+          },
+          "why": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "deviations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "field",
+          "why"
+        ],
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "why": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "plan": {
+      "enum": [
+        "personal",
+        "starter",
+        "advanced",
+        "enterprise"
+      ],
+      "description": "Tarif Asany klienta. Návrh smí používat jen funkce dostupné v tomto tarifu."
+    }
+  }
+}
